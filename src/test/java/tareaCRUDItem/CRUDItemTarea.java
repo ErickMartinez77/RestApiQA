@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class CRUDItemTarea {
     @Test
-    public void crudProject(){
+    public void crudItem(){
         //Create
         JSONObject body = new JSONObject();
         body.put("Content","ErickJSON");
@@ -27,7 +27,7 @@ public class CRUDItemTarea {
                 .body("Content",equalTo("ErickJSON"))
                 .log().all();
 
-        int idProject =response.then().extract().path("Id");
+        int idItem =response.then().extract().path("Id");
 
         // Read
         response=given()
@@ -50,7 +50,7 @@ public class CRUDItemTarea {
                 .body(body.toString())
                 .log().all()
         .when()
-                .put("https://todo.ly/api/items/"+idProject+".json");
+                .put("https://todo.ly/api/items/"+idItem+".json");
 
         response.then()
                 .statusCode(200)
@@ -63,7 +63,7 @@ public class CRUDItemTarea {
                 .basic("upb_api@api.com","12345")
                 .log().all()
         .when()
-                .delete("https://todo.ly/api/items/"+idProject+".json");
+                .delete("https://todo.ly/api/items/"+idItem+".json");
 
         response.then()
                 .statusCode(200)
