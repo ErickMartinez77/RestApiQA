@@ -8,7 +8,7 @@ public class RequestPOST implements iRequest{
     @Override
     public Response send(RequestInformation requestInformation) {
         Response response = given()
-                    .header("Token",requestInformation.getToken())
+                    .headers(requestInformation.getHeaders())
                     .body(requestInformation.getBody())
                     .log().all()
                 .when()

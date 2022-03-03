@@ -10,6 +10,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,18 +21,26 @@ public class MyStepClean {
     Response response;
     RequestInformation requestInformation = new RequestInformation();
     Map<String,String> dynamicVar= new HashMap<>();
-    @Given("yo uso la authenticacion basica")
-    public void yoUsoLaAuthenticacionBasica() {
+    @Given("yo uso la authenticacion {}")
+    public void yoUsoLaAuthenticacionBasica(String type) {
+        String authBasic = "Basic "+ Base64.getEncoder().encodeToString((Configuration.user+":"+Configuration.pass).getBytes(StandardCharsets.UTF_8));
+        if (type.equals("basica")){
+            requestInformation.setHeaders("Authorization","Token");
+        } else {
+            RequestInformation tokenRequest = new RequestInformation();
+            tokenRequest.setUrl(Configuration.host+"/api/authentication/token.json");
+            tokenRequest.setHeaders("Authorization",authBasic);
+            response = FactoryRequest.make("get").send(tokenRequest);
+            String token = response.then().extract().path("TokenString");
+            requestInformation.setHeaders("Token",token);
+        }
     }
 
-    @Given("yo uso la authenticacion por token")
-    public void yoUsoLaAuthenticacionPorToken(String token) {
-        requestInformation.setToken(token);
-    }
 
     @When("envio {} request a la {} con el body")
     public void envioPOSTRequestALaApiProjectsJsonConElBody(String method,String url,String body) {
-        requestInformation.setUrl(Configuration.host+replaceVar(url)).setBody(replaceVar(body));
+        requestInformation.setUrl(Configuration.host+replaceVar(url))
+                        .setBody(replaceVar(body));
         response= FactoryRequest.make(method).send(requestInformation);
     }
 
@@ -62,4 +72,6 @@ public class MyStepClean {
         }
         return value;
     }
+
+
 }

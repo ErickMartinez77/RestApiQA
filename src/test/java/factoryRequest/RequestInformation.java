@@ -1,11 +1,16 @@
 package factoryRequest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RequestInformation {
     private String url;
     private String body;
-    private String token;
+    private Map<String,String> headers;
 
-    public RequestInformation(){}
+    public RequestInformation(){
+        headers = new HashMap<>();
+    }
 
     public String getUrl() {
         return url;
@@ -25,12 +30,12 @@ public class RequestInformation {
         return this;
     }
 
-    public String getToken() {
-        return token;
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
-    public RequestInformation setToken(String token) {
-        this.token = token;
+    public RequestInformation setHeaders(String attribute, String value) {
+        this.headers.put(attribute,value);
         return this;
     }
 }

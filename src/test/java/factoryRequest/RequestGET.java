@@ -8,7 +8,7 @@ public class RequestGET implements iRequest{
     @Override
     public Response send(RequestInformation requestInformation) {
         Response response = given()
-                    .header("Token",requestInformation.getToken())
+                    .headers(requestInformation.getHeaders())
                     .log().all()
                 .when()
                     .get(requestInformation.getUrl());

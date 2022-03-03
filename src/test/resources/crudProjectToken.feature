@@ -1,6 +1,7 @@
 Feature: Project
   Scenario: create read update delete project
-    Given yo uso la authenticacion basica
+
+    Given yo uso la authenticacion token
     When envio POST request a la /api/projects.json con el body
     """
     {
