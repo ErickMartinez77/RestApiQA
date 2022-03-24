@@ -1,6 +1,6 @@
 Feature: Project
   Scenario: create read update delete project
-    Given yo uso la authenticacion basica
+    Given yo uso la authenticacion token
     When envio POST request a la /api/projects.json con el body
     """
     {
@@ -41,6 +41,7 @@ Feature: Project
     Then el codigo de respuesta deberia ser 200
     And el atributo Content deberia ser Cucumber
 
+    Given yo uso la authenticacion basica
     When envio PUT request a la /api/projects/ID_PROJ.json con el body
     """
     {
@@ -50,6 +51,7 @@ Feature: Project
     Then el codigo de respuesta deberia ser 200
     And el atributo Content deberia ser Cucumber2
 
+    Given yo uso la authenticacion token
     When envio DELETE request a la /api/projects/ID_PROJ.json con el body
     """
     """

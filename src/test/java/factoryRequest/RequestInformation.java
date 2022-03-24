@@ -38,4 +38,9 @@ public class RequestInformation {
         this.headers.put(attribute,value);
         return this;
     }
+
+    public RequestInformation removeHeader(String attribute){
+        this.headers.remove(attribute);
+        return this;
+    }
 }

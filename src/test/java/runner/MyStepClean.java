@@ -25,7 +25,7 @@ public class MyStepClean {
     public void yoUsoLaAuthenticacionBasica(String type) {
         String authBasic = "Basic "+ Base64.getEncoder().encodeToString((Configuration.user+":"+Configuration.pass).getBytes(StandardCharsets.UTF_8));
         if (type.equals("basica")){
-            requestInformation.setHeaders("Authorization","Token");
+            requestInformation.setHeaders("Authorization",authBasic);
         } else {
             RequestInformation tokenRequest = new RequestInformation();
             tokenRequest.setUrl(Configuration.host+"/api/authentication/token.json");
@@ -36,12 +36,43 @@ public class MyStepClean {
         }
     }
 
-
-    @When("envio {} request a la {} con el body")
-    public void envioPOSTRequestALaApiProjectsJsonConElBody(String method,String url,String body) {
+    @When("envio POST request a la {} con el body")
+    public void envioPOSTRequestALaApiProjectsJsonConElBody(String url,String body) {
         requestInformation.setUrl(Configuration.host+replaceVar(url))
                         .setBody(replaceVar(body));
-        response= FactoryRequest.make(method).send(requestInformation);
+        String token = response.then().extract().path("TokenString");
+        requestInformation.removeHeader("Authorization");
+        requestInformation.setHeaders("Token",token);
+        response= FactoryRequest.make("POST").send(requestInformation);
+    }
+
+    @When("envio PUT request a la {} con el body")
+    public void envioPUTRequestALaApiProjectsJsonConElBody(String url,String body) {
+        String authBasic = "Basic "+ Base64.getEncoder().encodeToString((Configuration.user+":"+Configuration.pass).getBytes(StandardCharsets.UTF_8));
+        requestInformation.setUrl(Configuration.host+replaceVar(url))
+                .setBody(replaceVar(body));
+        requestInformation.removeHeader("Token");
+        requestInformation.setHeaders("Authorization",authBasic);
+        response= FactoryRequest.make("PUT").send(requestInformation);
+    }
+
+    @When("envio GET request a la {} con el body")
+    public void envioGETRequestALaApiProjectsJsonConElBody(String url,String body) {
+        String authBasic = "Basic "+ Base64.getEncoder().encodeToString((Configuration.user+":"+Configuration.pass).getBytes(StandardCharsets.UTF_8));
+        requestInformation.setUrl(Configuration.host+replaceVar(url))
+                .setBody(replaceVar(body));
+        requestInformation.setHeaders("Authorization",authBasic);
+        response= FactoryRequest.make("GET").send(requestInformation);
+    }
+
+    @When("envio DELETE request a la {} con el body")
+    public void envioDELETERequestALaApiProjectsJsonConElBody(String url,String body) {
+        requestInformation.setUrl(Configuration.host+replaceVar(url))
+                .setBody(replaceVar(body));
+        String token = response.then().extract().path("TokenString");
+        requestInformation.removeHeader("Authorization");
+        requestInformation.setHeaders("Token",token);
+        response= FactoryRequest.make("DELETE").send(requestInformation);
     }
 
     @Then("el codigo de respuesta deberia ser {int}")
